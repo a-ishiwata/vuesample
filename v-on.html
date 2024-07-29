@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Vie.jsのサンプル</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://unpkg.com/vue@3.2.0/dist/vue.global.js"></script>
+  </head>
+  <body>
+    <h1 class="bg-primary text-white display-4 px-3">Vue3</h1>
+    <div id="app" class="container">
+      <button v-on:click="mOnClick">マウスをクリック</button>
+      <p>{{ now }}</p>
+    </div>
+    <script>
+      const appdata = {
+        data() {
+          return {
+            now: "-"
+          }
+        },
+        methods: {
+          mOnClick: function() {
+            this.now = new Date().toLocaleString('ja-JP');
+          }
+        }
+      }
+      
+      let app = Vue.createApp(appdata);
+      app.mount("#app");
+    </script>    
+  </body>
+</html>

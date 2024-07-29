@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Vie.jsのサンプル</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://unpkg.com/vue@3.2.0/dist/vue.global.js"></script>
+  </head>
+  <body>
+    <style>
+      .demo {
+        font-family: sans-serif;
+        border: 1px solid #eee;
+        border-radius: 2px;
+        padding: 20px 30px;
+        margin-top: 1em;
+        margin-bottom: 40px;
+        user-select: none;
+        overflow-x: auto;
+      }
+    </style>
+    <h1 class="bg-primary text-white display-4 px-3">Vue3</h1>
+    <!-- 3. id="components-demo" のタグで button-counter というコンポーネントを使う -->
+    <div id="components-demo">
+      <button-counter></button-counter>
+    </div>
+    <script>
+      const app = Vue.createApp({});
+
+      // 1. app で button-counter というコンポーネントを作成する
+      app.component(
+        "button-counter",
+        {
+          data(){
+            return {
+              count: 0
+            }
+          },
+          template: `<button v-on:click="count++">count {{ count }}</button>`
+        }
+      );
+      
+      app.mount("#components-demo");  // 2. app を components-demo という id のところにマウント
+
+    </script>    
+  </body>
+</html>

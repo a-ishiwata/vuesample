@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <title>Vue.js のサンプル</title>
+    <script src="https://unpkg.com/vue@3.0.0/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/axios@0.21.1/dist/axios.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.js"></script>
+  </head>
+  <body>
+    <h1>Vue3</h1>
+    <div id="app">
+        <search-box></search-box>
+        <result-list></result-list>
+    </div>
+    <script>
+        const app = Vue.createApp({
+            data: () => ({
+                items: null,
+                message: 'no keyword'
+            }),
+            methods: {
+                getAnswer: function(keyword) {
+                //子コンポーネントからemitされたデータはメソッドの引数になる    
+                    if(keyword ===''){
+                        console.log('入力なし')
+                        this.message = "no keyword"
+                        this.items = null
+                        return
+                    }
+                    this.message = 'loading...' + keyword
+                    const vm = this
+                    const params = { page: 1, per_page: 20, query: keyword }
+                    axios.get('https://qiita.com/api/v2/items', { params })
+                        .then(function(response){
+    //                        console.log(response)
+                            vm.items = response.data;
+                        })
+                        .catch(function(error){
+                            //vm.message = 'Error! ' + error
+                            //問い合わせが多すぎたためかエラーになるようになったので、loading...のメッセージを見るためにコメントとした
+                        })
+                        .finally(function() {
+
+                        })
+                }
+            },
+            // 子コンポーネントからemitされたデータを受け取るためのイベント名とメソッド名を指定する（search-box）
+            // 子コンポーネントに渡すデータをタグの属性で指定する（result-list）
+            template: ` 
+                <div>
+                    <search-box @keyword-changed="getAnswer" />
+                    <result-list :items="items" :message="message" />
+                </div>
+            `
+        });
+
+        app.component('search-box', {
+            data: () => ({
+                keyword: ''
+            }),
+            template: `
+                <p>
+                    <input type="text" v-model="keyword">
+                </p>
+                {{ keyword }}
+            `,
+            watch: {
+                keyword: function(newKeyword, oldKeyword) {
+                    this.$emit('keyword-changed', newKeyword);  // イベント名と変数を指定してemitする
+                }
+            }
+        });
+
+        app.component('result-list', {
+            props: ['items', 'message'],    // 親コンポーネントから渡されるデータを記載する
+            template: `
+                <p>component result-list</p>
+                {{ message }}
+                <ul>
+                    <li v-for="item in items">
+                        <a v-bind:href="item.url" target="_blank">
+                            {{ item.title }}                
+                        </a>
+                        likes: {{ item.likes_count }}
+                    </li>
+                </ul>
+            `,          
+        });
+
+
+        app.mount('#app')
+    </script>
+  </body>
+</html>
